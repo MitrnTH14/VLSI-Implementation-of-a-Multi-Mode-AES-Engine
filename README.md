@@ -59,8 +59,7 @@ The `GCM_tb.v` testbench validates the design against the official NIST test vec
 * **Generated Ciphertext:** `d9313225f88406e5a55909c5aff5269a` **(Match ✅)**
 * **Generated Auth Tag:** `c70cc4e01a0737a2efa39a09c0ee93` **(Match ✅)**
 
-![GCM Verification Waveform](https.place-holder.com/800x200?text=Insert+Your+GCM_tb.v+Waveform+Image+Here)
-
+<img width="1559" height="708" alt="Screenshot 2025-10-14 121711" src="https://github.com/user-attachments/assets/e0b90882-56d2-4654-b434-8fb833e7ccbe" />
 ---
 ## Synthesis & Performance Analysis
 To analyze the hardware cost and performance, the design was synthesized using **Synopsys Design Compiler**. A comparative analysis was performed between the baseline encryption core and the full GCM engine.
