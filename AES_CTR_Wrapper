@@ -1,0 +1,42 @@
+
+module AES_CTR_Wrapper (
+    input clk,
+    input reset,
+    input start,                      // Begin a new message/stream
+    input [127:0] key,                // AES key
+    input [127:0] initial_counter_block, // MODIFIED: Was 64-bit nonce
+    input [127:0] data_in,
+    input data_valid,
+    output reg [127:0] data_out,
+    output reg ready
+);
+
+    wire [127:0] keystream;
+    // MODIFIED: counter_reg is now the full 128 bits
+    reg [127:0] counter_reg;
+
+    // The input to the AES core is now just the full counter register
+    AES_Encrypt_checksum #(.N(128)) aes_encrypt_core (.in(counter_reg), .key(key), .out(keystream));
+    
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            counter_reg <= 128'b0;
+            ready <= 1'b1;
+            data_out <= 128'b0;
+        end else if (start) begin
+            // On start, load the full initial counter block from NIST
+            counter_reg <= initial_counter_block;
+            ready <= 1'b1;
+            data_out <= 128'b0;
+        end else if (ready && data_valid) begin
+            // Go BUSY and process
+            ready <= 1'b0;
+            data_out <= data_in ^ keystream;
+            // Increment the full 128-bit counter
+            counter_reg <= counter_reg + 1;
+        end else begin
+            // Become (or stay) READY
+            ready <= 1'b1;
+        end
+    end
+endmodule
